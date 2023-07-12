@@ -1,0 +1,19 @@
+# STAGE-1
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+COPY package*.json .
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+# STAGE-2 prepare nginx
+FROM nginx
+
+EXPOSE 80
+
+COPY --from=builder /app/build /usr/share/nginx/html
+
